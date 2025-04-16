@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz RP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
+      color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      padding: 30px;
+      background: #111;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      color: gold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #333;
+      color: #fff;
+    }
+
+    button {
+      background: gold;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ffd700cc;
+    }
+
+    .answers div {
+      background: #222;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 12px;
+      transition: transform 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+
+    .answers div:hover {
+      background: #333;
+      transform: scale(1.02);
+    }
+
+    .selected {
+      border: 2px solid gold;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #timer {
+      text-align: right;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #ccc;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 120px;
+    }
+    .popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background: rgb(0, 0, 0);
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.popup-content button {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background: gold;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <img src="image1.png" class="logo" alt="Logo Quiz" />
+
+    <div id="form">
+      <h2>Bienvenue !</h2>
+      <input id="rpName" placeholder="Nom RP" />
+      <input id="discord" placeholder="Discord" />
+      <button onclick="goToRules()">Suivant</button>
+    </div>
+
+    <div id="rules" class="hidden">
+      <h2>Règlement</h2>
+      <p>Tu t’engages à respecter les règles du serveur et à répondre sérieusement au quiz RP.</p>
+      <button onclick="startQuiz()">J'ai lu et j'accepte</button>
+    </div>
+
+    <div id="quiz" class="hidden">
+      <div id="timer">Temps restant : 15:00</div>
+      <div id="questionText"></div>
+      <div id="answers" class="answers"></div>
+      <button id="nextBtn" onclick="nextQuestion()">Suivant</button>
+    </div>
+
+    <div id="result" class="hidden">
+      <h2>Merci !</h2>
+      <p>Vos réponses ont été envoyées avec succès.</p>
+    </div>
+  </div>
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <p id="popup-message"></p>
+      <button onclick="closePopup()">Fermer</button>
+    </div>
+  </div>
+  
+  <script>
+    const questions = [
+      // Palier 1 (Facile)
+      { text: "Quelle est la limitation de vitesse en ville ?", answers: ["30 km/h", "50 km/h", "70 km/h", "90 km/h"], correct: 1 },
+      { text: "Que signifie un panneau STOP ?", answers: ["Accélérer", "Regarder à gauche seulement", "S’arrêter obligatoirement", "Continuer s’il n’y a personne"], correct: 2 },
+      { text: "Feu orange = ?", answers: ["Go !", "Ralentir et s’arrêter si possible", "Klaxonner", "Clignotant gauche"], correct: 1 },
+      { text: "Quelle pédale est à gauche ?", answers: ["Frein", "Accélérateur", "Embrayage", "Cloche"], correct: 2 },
+      { text: "Que faire avant de changer de voie ?", answers: ["Regarder ses mails", "Freiner", "Clignotant et contrôle des angles morts", "Prier"], correct: 2 },
+      { text: "Dans un rond-point, qui a la priorité ?", answers: ["Ceux qui arrivent vite", "Ceux à droite", "Ceux à l’intérieur", "Le premier qui klaxonne"], correct: 2 },
+      { text: "Que signifie un panneau triangulaire rouge ?", answers: ["Information", "Obligation", "Danger", "Réduction"], correct: 2 },
+      { text: "Panneau 'interdiction de tourner', vous :", answers: ["Tournez quand même", "Tournez mais discrètement", "Suivez la règle", "Demandez à Google Maps"], correct: 2 },
+      { text: "Vous êtes à vélo sur l’autoroute :", answers: ["Vous continuez", "Vous appelez la police", "Vous faites une story Insta", "Vous rebroussez chemin"], correct: 3 },
+      { text: "Vous loupez une sortie, vous :", answers: ["Faites marche arrière", "Coupez la barrière", "Continuez et cherchez une autre sortie", "Pleurez"], correct: 2 },
+      { text: "Que signifie un feu rouge ?", answers: ["Tourner à gauche", "S’arrêter", "Klaxonner", "Accélérer"], correct: 1 },
+      { text: "Dans une zone 30, vous roulez à :", answers: ["À fond les ballons", "30 km/h", "70 km/h", "50 km/h"], correct: 1 },
+      { text: "Vous entendez une sirène derrière vous :", answers: ["Vous filmez", "Vous laissez passer", "Vous faites demi-tour", "Vous bloquez"], correct: 1 },
+      { text: "Clignotant = ?", answers: ["Obligation", "Conseil", "Lumière disco", "Option"], correct: 0 },
+      { text: "Que faire avant de démarrer ?", answers: ["Regarder autour et mettre sa ceinture", "Fermer les yeux", "Rien", "Lancer Spotify"], correct: 0 },
+      { text: "Un panneau rond rouge barré signifie :", answers: ["Promotion", "Interdiction", "Obligation", "Danger"], correct: 1 },
+      { text: "Vous voyez un piéton s’apprêter à traverser :", answers: ["Vous accélérez", "Vous vous arrêtez", "Vous sortez prendre un selfie", "Vous le klaxonnez"], correct: 1 },
+      { text: "En conduite , les stops sont :", answers: ["Obligatoires", "Fatigants", "Optionnels", "Esthétiques"], correct: 0 },
+      { text: "Quel est le bon côté pour doubler ?", answers: ["Centre", "Gauche", "Droite", "Dessus"], correct: 1 },
+      { text: "Une voiture de police avec gyrophares allumés signifie :", answers: ["Rien", "Tuto YouTube", "Course poursuite", "Priorité"], correct: 3 },
+
+
+      // Palier 2 (Moyen)
+      { text: "Distance de sécurité à 90 km/h ?", answers: ["18 m", "36 m", "54 m", "90 m"], correct: 2 },
+      { text: "Triangle de signalisation en cas de panne :", answers: ["Juste derrière la voiture", "10 mètres", "30 mètres", "100 mètres"], correct: 2 },
+      { text: "L’alcool est toléré jusqu’à ?", answers: ["0,2 g/L", "0,5 g/L", "0,8 g/L", "Pas de limite"], correct: 1 },
+      { text: "Que faire en cas d’aquaplaning ?", answers: ["Freiner fort", "Accélérer", "Lâcher les pédales et garder le volant droit", "Klaxonner"], correct: 2 },
+      { text: "Panneau bleu avec flèche blanche ?", answers: ["Fin d’interdiction", "Priorité", "Obligation de direction", "Panneau déco"], correct: 2 },
+      { text: "Ligne continue = ?", answers: ["On peut doubler vite", "On fait comme on veut", "Interdiction de franchir", "Juste une déco"], correct: 2 },
+      { text: "Panneau avec un bonhomme qui marche ?", answers: ["Interdit aux piétons", "Passage piéton", "Début de zone piétonne", "Faites du sport"], correct: 2 },
+      { text: "Vous ratez votre créneau, vous :", answers: ["Recommencez", "Laissez la voiture là", "Appelez un ami", "Priez pour que personne regarde"], correct: 0 },
+      { text: "Un lama traverse l’autoroute :", answers: ["Vous le suivez", "Vous freinez", "Vous klaxonnez en rythme", "Vous prenez une photo"], correct: 1 },
+      { text: "Votre voiture fait des bruits chelous, vous :", answers: ["Montez le son de la radio", "Sortez voir", "Ignorez", "Allez au garage"], correct: 3 },
+      { text: "Un feu orange fixe signifie :", answers: ["Ralentir et s'arrêter si possible", "Stop immédiat", "Accélérer", "Aller au McDo"], correct: 0 },
+      { text: "Si vous êtes à un rond-point, vous cédez à :", answers: ["Personne", "Les piétons", "Ceux qui arrivent à gauche", "La musique"], correct: 2 },
+      { text: "Rouler à contresens est :", answers: ["Interdit", "Fun", "Toléré", "Pas bieenn"], correct: 0 },
+      { text: "Un excès de vitesse peut être sanctionné par :", answers: ["Un cadeau", "Un like", "Une amende", "Un bisou"], correct: 2 },
+      { text: "Priorité à droite signifie :", answers: ["On laisse passer les véhicules venant de droite", "On double par la droite", "On salue à droite", "On fonce"], correct: 0 },
+      { text: "Un passage à niveau fermé indique :", answers: ["Danger", "Montée de l’adrénaline", "Feu vert", "Demi-tour"], correct: 0 },
+      { text: "À quoi sert une ceinture ?", answers: ["À avoir du style", "À avoir de l'argent", "À se protéger", "À serrer"], correct: 2 },
+      { text: "Stationner sur un trottoir est :", answers: ["Temporaire", "Illégal", "Stylé", "Utile"], correct: 1 },
+      { text: "Faire des drifts en ville est :", answers: ["Autorisé", "Interdit", "Recommandé pour l’ambiance", "Toléré si c’est stylé"], correct: 1 },
+      { text: "Conduire sans permis est :", answers: ["Grave", "Normal", "Un glitch", "Un choix"], correct: 0 },
+
+
+      // Palier 3 (Difficile / Troll)
+      { text: "Qu’est-ce que l’ABS ?", answers: ["AirBag Supérieur", "Système anti-blocage des roues", "Antenne Bluetooth Satellite", "Allumage Basique Sécurisé"], correct: 1 },
+      { text: "Quand peut-on doubler par la droite ?", answers: ["Jamais", "Quand le véhicule de gauche tourne à gauche", "Toujours", "Quand t’es pressé"], correct: 1 },
+      { text: "Que faire avant de s’insérer sur autoroute ?", answers: ["Freiner", "Mettre les warnings", "Accélérer et s’insérer en douceur", "Fermer les yeux"], correct: 2 },
+      { text: "Position des mains au volant ?", answers: ["10h10", "14h30", "12h12", "Sur les genoux"], correct: 0 },
+      { text: "Pneus sous-gonflés = ?", answers: ["Mieux sur neige", "Moins de consommation", "Risque d’éclatement", "Plus de confort"], correct: 2 },
+      { text: "Panneau rond avec fond bleu = ?", answers: ["Interdiction", "Obligation", "Danger", "Stop"], correct: 1 },
+      { text: "Clignotant cassé, que faire ?", answers: ["Rouler normalement", "Faire signe avec la main", "Mettre les phares", "Ne rien faire"], correct: 1 },
+      { text: "Un tracteur vous dépasse à 130 km/h :", answers: ["Vous le suivez", "Vous appelez un exorciste", "Vous filmez", "Vous pleurez"], correct: 1 },
+      { text: "Vous tombez en panne de batterie, vous :", answers: ["Mettez la voiture au feu", "Rechargez avec des câbles", "Secouez la voiture", "Espérez que ça redémarre"], correct: 1 },
+      { text: "Le sol est en feu devant vous, vous :", answers: ["Faites un wheeling", "Attendez que ça refroidisse", "Accélérez à fond", "Vous lancez dans une cascade"], correct: 1 },
+      { text: "Que faire en cas d’accident ?", answers: ["Appeler les secours", "Se coucher au sol pour le style", "Filmer", "Fuir"], correct: 0 },
+      { text: "À quoi sert un clignotant dans un rond-point ?", answers: ["À montrer la sortie choisie", "À clignoter", "À rien", "À décorer"], correct: 0 },
+      { text: "Rouler tous feux éteints la nuit est :", answers: ["Économe", "Stylé", "Dangereux", "coool"], correct: 2 },
+      { text: "Un panneau triangulaire avec un point d’exclamation signifie :", answers: ["Une surprise", "Un danger", "Une blague", "Un piège"], correct: 1 },
+      { text: "Qui a la priorité : une ambulance ou vous ?", answers: ["Vous", "Elle", "Personne", "Celui qui va plus vite"], correct: 1 },
+      { text: "Conduire sous influence de stupéfiants est :", answers: ["Punissable", "Cool", "safe", "Autorisé"], correct: 0 },
+      { text: "Mettre une ceinture empêche :", answers: ["De tomber amoureux", "De sauter", "De tomber du siège en cas de choc", "De respirer"], correct: 2 },
+      { text: "Un gyrophare bleu clignotant sur un véhicule signifie :", answers: ["Bling bling", "Auto-école stylée", "Taxi libre", "Véhicule prioritaire"], correct: 3 },
+      { text: "Faire demi-tour sur l’autoroute :", answers: ["Est conseillé", "Fait gagner du temps", "Est dangereux et interdit", "Est légal"], correct: 2 },
+      { text: "Rouler sur le trottoir :", answers: ["Peut être sanctionné", "Est un droit", "Est autorisé si c’est rapide", "Est un raccourci validé"], correct: 0 }
+
+    ];
+
+
+
+    let current = 0;
+    let responses = [];
+    let startTime;
+    let formSubmitted = false;
+
+
+    function goToRules() {
+      const name = document.getElementById("rpName").value.trim();
+      const discord = document.getElementById("discord").value.trim();
+      if (!name || !discord) {
+  showPopup("⚠️ Merci de remplir le nom RP et le Discord !");
+  return;
+}
+
+      document.getElementById("form").classList.add("hidden");
+      document.getElementById("rules").classList.remove("hidden");
+    }
+    function showPopup(message) {
+  document.getElementById("popup-message").textContent = message;
+  document.getElementById("popup").classList.remove("hidden");
+}
+
+function closePopup() {
+  document.getElementById("popup").classList.add("hidden");
+}
+
+    function startQuiz() {
+      document.getElementById("rules").classList.add("hidden");
+      document.getElementById("quiz").classList.remove("hidden");
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+
+      showQuestion();
+    }
+
+    function updateTimer() {
+  const now = Date.now();
+  const diff = 900000 - (now - startTime); // 15 minutes
+
+  if (diff <= 0) {
+    clearInterval(timerInterval); // Arrête le timer
+    submit();
+  } else {
+    const mins = Math.floor(diff / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    document.getElementById("timer").textContent = `Temps restant : ${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+}
+
+
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById("questionText").textContent = `Q${current + 1} - ${q.text}`;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      q.answers.forEach((ans, i) => {
+        const div = document.createElement("div");
+        div.textContent = ans;
+        div.onclick = () => selectAnswer(i, div);
+        answersDiv.appendChild(div);
+      });
+    }
+
+    function selectAnswer(index, element) {
+      const correctIndex = questions[current].correct;
+
+      responses[current] = (index === correctIndex) ? 1 : 0;
+      document.querySelectorAll("#answers div").forEach(div => div.classList.remove("selected"));
+      element.classList.add("selected");
+    }
+
+
+    function nextQuestion() {
+      if (responses[current] === undefined) {
+  showPopup("⛔ Tu dois sélectionner une réponse !");
+  return;
+}
+
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        submit();
+      }
+    }
+
+    function submit() {
+  if (formSubmitted) return;
+  formSubmitted = true;
+  clearInterval(timerInterval); // <-- ajoute cette ligne ici
+
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  const data = {
+    name: document.getElementById("rpName").value,
+    discord: document.getElementById("discord").value,
+    responses: responses,
+    date: new Date().toISOString()
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbxdAFyb2_Fb1EuYlkpb4TPxdoDtKNAkQIYsY_Kgy7KnSpaJdzsdK9n5-eQMeDK0Zko/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }).then(() => {
+    console.log("Données envoyées !");
+  }).catch(err => {
+    console.error("Erreur lors de l'envoi :", err);
+    formSubmitted = false;
+  });
+}
+
+
+  </script>
+</body>
+
+</html>

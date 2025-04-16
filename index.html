@@ -31,6 +31,7 @@
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
       animation: fadeIn 0.6s ease-in-out;
+      text-align: center;
     }
 
     @keyframes fadeIn {
@@ -162,7 +163,12 @@
 
     <div id="rules" class="hidden">
       <h2>Règlement</h2>
-      <p>Tu t’engages à respecter les règles du serveur et à répondre sérieusement au quiz RP.</p>
+      <p>Tu t’engages à répondre sérieusement au quiz RP. Toute personne soupçonnée de triche se verra retirée de l'événement.
+
+        Vous allez avoir une série de 60 questions à faire en 15 min, alors ne traînez pas. 
+        Vous ne pouvez pas revenir en arrière. Si vous actualisez, le questionnaire est réinitialisé.
+        Merci de n'envoyer qu'une seule réponse.
+      </p>
       <button onclick="startQuiz()">J'ai lu et j'accepte</button>
     </div>
 
@@ -204,7 +210,7 @@
       { text: "Clignotant = ?", answers: ["Obligation", "Conseil", "Lumière disco", "Option"], correct: 0 },
       { text: "Que faire avant de démarrer ?", answers: ["Regarder autour et mettre sa ceinture", "Fermer les yeux", "Rien", "Lancer Spotify"], correct: 0 },
       { text: "Un panneau rond rouge barré signifie :", answers: ["Promotion", "Interdiction", "Obligation", "Danger"], correct: 1 },
-      { text: "Vous voyez un piéton s’apprêter à traverser :", answers: ["Vous accélérez", "Vous vous arrêtez", "Vous sortez prendre un selfie", "Vous le klaxonnez"], correct: 1 },
+      { text: "Vous voyez un piéton s’apprêter à traverser :", answers: ["Vous accélérez", "Vous vous arrêtez", "Vous sortez prendre un selfie", "Vous l'écrasez"], correct: 1 },
       { text: "En conduite , les stops sont :", answers: ["Obligatoires", "Fatigants", "Optionnels", "Esthétiques"], correct: 0 },
       { text: "Quel est le bon côté pour doubler ?", answers: ["Centre", "Gauche", "Droite", "Dessus"], correct: 1 },
       { text: "Une voiture de police avec gyrophares allumés signifie :", answers: ["Rien", "Tuto YouTube", "Course poursuite", "Priorité"], correct: 3 },
@@ -212,7 +218,7 @@
 
       // Palier 2 (Moyen)
       { text: "Distance de sécurité à 90 km/h ?", answers: ["18 m", "36 m", "54 m", "90 m"], correct: 2 },
-      { text: "Triangle de signalisation en cas de panne :", answers: ["Juste derrière la voiture", "10 mètres", "30 mètres", "100 mètres"], correct: 2 },
+      { text: "Triangle de signalisation en cas de panne, se place :", answers: ["Juste derrière la voiture", "10 mètres", "30 mètres", "100 mètres"], correct: 2 },
       { text: "L’alcool est toléré jusqu’à ?", answers: ["0,2 g/L", "0,5 g/L", "0,8 g/L", "Pas de limite"], correct: 1 },
       { text: "Que faire en cas d’aquaplaning ?", answers: ["Freiner fort", "Accélérer", "Lâcher les pédales et garder le volant droit", "Klaxonner"], correct: 2 },
       { text: "Panneau bleu avec flèche blanche ?", answers: ["Fin d’interdiction", "Priorité", "Obligation de direction", "Panneau déco"], correct: 2 },
